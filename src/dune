@@ -1,0 +1,14 @@
+(library
+ (name nloge)
+ (public_name nloge)
+ (modules
+  (:standard \ test))
+ (libraries eio)
+ (flags :standard -alert -unstable)
+ (preprocess
+  (pps ppx_deriving.std)))
+
+(test
+ (name test)
+ (modules test)
+ (libraries nloge eio_main))
