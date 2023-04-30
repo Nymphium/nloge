@@ -20,7 +20,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         on = opam-nix.lib.${system};
         src = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
-        local =
+        localNames =
           with builtins;
           filter
             (f: !isNull f)
@@ -29,34 +29,34 @@
               if isNull f' then null else elemAt f' 0)
               (attrNames (readDir ./.)));
 
+        localPackagesQuery =
+          with builtins; listToAttrs (map (p: {
+            name = p;
+            value = "*";
+          }) localNames);
+
         devPackagesQuery = {
           ocaml-lsp-server = "*";
           utop = "*";
           ocamlformat = pkgs.callPackage ./nix/ocamlformat.nix { ocamlformat = ./.ocamlformat; };
         };
 
-        query = devPackagesQuery // {
-          ocaml-system = "*";
-        };
+        query = devPackagesQuery // localPackagesQuery // {
+            ocaml-system = "*";
+          };
 
         overlay = final: prev:
-          with builtins;
-          listToAttrs
-            (map (p: {
-              name = p;
-              value = prev.${p}.overrideAttrs (_: {
-                  doNixSupport = false;
-                  with-test = true;
-                });
-              }) local);
+          builtins.mapAttrs (p: _:
+          prev.${p}.overrideAttrs (_: {
+            doNixSupport = false;
+          })) localPackagesQuery;
 
         scope =
           let scp = on.buildOpamProject' {
               inherit pkgs;
-              # resolveArgs = { with-test = false; };
+              resolveArgs = { with-test = true; with-doc = true; };
             } src query;
-          in scp;
-          # in scp.overrideScope' overlay;
+          in scp.overrideScope' overlay;
 
         devPackages = builtins.attrValues
           (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope);
@@ -65,7 +65,7 @@
 
         devShells.default =
           pkgs.mkShell {
-            inputsFrom = builtins.map (p: scope.${p} ) local;
+            inputsFrom = builtins.map (p: scope.${p} ) localNames;
             buildInputs = devPackages;
           };
       });

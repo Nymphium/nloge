@@ -3,7 +3,7 @@
  (public_name nloge)
  (modules
   (:standard \ test))
- (libraries eio)
+ (libraries eio hmap)
  (flags :standard -alert -unstable)
  (preprocess
   (pps ppx_deriving.std)))

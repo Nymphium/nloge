@@ -4,7 +4,9 @@ depends: [
   "dune" {>= "3.0.0"}
   "eio"
   "ppx_deriving"
+  "hmap"
   "eio_main" { with-test }
   "ppx_expect" { with-test }
   "alcotest" { with-test }
+  "odoc" { with-doc }
 ]

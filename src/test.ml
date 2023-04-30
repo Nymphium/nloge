@@ -3,8 +3,11 @@ let () =
   @@ fun env ->
   Eio.Switch.run
   @@ fun sw ->
-  Nloge.Handler.run ~sw ~output:env#stdout ~level:`Debug
+  Nloge.run ~sw ~output:env#stdout ~level:`Debug
   @@ fun () ->
-  Nloge.Logging.debug (fun m -> m "hello");
-  Nloge.Logging.info (fun m -> m "world")
+  let key = Nloge.Tags.int "index" in
+  for i = 1 to 20 do
+    let tags = Nloge.Tags.(empty |> add key i) in
+    Nloge.debug (fun m -> m ~tags "hello, %d\n" i)
+  done
 ;;
