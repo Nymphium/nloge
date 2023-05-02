@@ -1,4 +1,4 @@
-type 'a msgf = (?tags:Tags.t-> ('a, Fmt.t,unit, unit) format4 -> 'a) -> unit
+type 'a msgf = (?tags:Tags.t-> ('a, Format.formatter,unit, unit) format4 -> 'a) -> unit
 type 'm t = Level.t * 'm msgf
 
 type _ Effect.t +=

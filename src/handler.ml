@@ -1,15 +1,14 @@
 open Eio
 open Effect.Deep
 
-let formatter msgf level km =
-  msgf (fun ?(tags = Tags.empty) fmt ->
-    ignore tags;
-    Format.kasprintf km ("[%a]" ^^ fmt) Level.pp level)
+let formatting kasprintf msgf level km =
+  msgf
+  @@ fun ?(tags = []) fmtf ->
+  Fun.flip Format.kasprintf fmtf @@ fun message -> kasprintf ~level ~message ~tags km
 ;;
 
-let run ~sw ~output ~(level : Level.t) f =
+let run ~sw ~outputs ~(level : Level.t) ?(format = Format_.json) f =
   let effc : type a. a Effect.t -> ((a, 'r) continuation -> 'r) option = function
-    | Level.Get -> Some (fun k -> continue k level)
     | Logging.Log (level', msgf) ->
       Some
         (fun k ->
@@ -17,7 +16,9 @@ let run ~sw ~output ~(level : Level.t) f =
             if Level.compare level level' >= 0
             then
               Fiber.fork ~sw
-              @@ fun () -> formatter msgf level' @@ Fun.flip Flow.copy_string output
+              @@ fun () ->
+              formatting format msgf level'
+              @@ fun m -> List.iter (Flow.copy_string (m ^ "\n")) outputs
           in
           continue k ())
     | _ -> None
