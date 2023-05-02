@@ -1,5 +1,5 @@
 module Level = Level
-include Handler
-include Logging
+include Writer
+include Emit
 module Tags = Tags
 module Format = Format_

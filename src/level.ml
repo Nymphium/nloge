@@ -27,18 +27,19 @@ let parse = function
   | _ -> None
 ;;
 
-let to_string = function
-  | `Emergency -> {|"EMERGENCY"|}
-  | `Alert -> {|"ALERT"|}
-  | `Critical -> {|"CRITICAL"|}
-  | `Error -> {|"ERROR"|}
-  | `Warning -> {|"WARNING"|}
-  | `Notice -> {|"NOTICE"|}
-  | `Info -> {|"INFO"|}
-  | `Debug -> {|"DEBUG"|}
+let pp fmt (t : t) =
+  Format.fprintf fmt
+  @@
+  match t with
+  | `Emergency -> "EMERGENCY"
+  | `Alert -> "ALERT"
+  | `Critical -> "CRITICAL"
+  | `Error -> "ERROR"
+  | `Warning -> "WARNING"
+  | `Notice -> "NOTICE"
+  | `Info -> "INFO"
+  | `Debug -> "DEBUG"
 ;;
-
-let pp fmt (t : t) = Format.fprintf fmt "%s" @@ to_string t
 
 let show t =
   let b = Buffer.create 16 in
