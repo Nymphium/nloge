@@ -19,7 +19,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         on = opam-nix.lib.${system};
-        src = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
+        src = ./.;
         localNames =
           with builtins;
           filter
