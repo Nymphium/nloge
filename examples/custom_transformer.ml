@@ -1,4 +1,34 @@
-(** Use [Nloge.make_emit_handler] to create custom transformer  *)
+(** Use [Nloge.make_emit_handler] to create custom transformer
+
+INFO:
+        message    = "a"
+        label      = "File \"examples/custom_transformer.ml\", line 34, characters 26-33"
+        index      = 1
+
+DEBUG:
+        message    = "hello, 1"
+        index      = 1
+
+INFO:
+        message    = "a"
+        label      = "File \"examples/custom_transformer.ml\", line 34, characters 26-33"
+        index      = 2
+
+DEBUG:
+        message    = "hello, 2"
+        index      = 2
+
+INFO:
+        message    = "a"
+        label      = "File \"examples/custom_transformer.ml\", line 34, characters 26-33"
+        index      = 3
+
+DEBUG:
+        message    = "hello, 3"
+        index      = 3
+
+......
+ *)
 let plain_transformer f =
   Nloge.make_emit_handler f
   @@ fun level loc metadata msg ->

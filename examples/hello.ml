@@ -1,3 +1,5 @@
+(* By default nloge logs with JSON format
+   {"log_level":"DEBUG","message":"hello","label":"File \"examples/hello.ml\", line 9, characters 5-12","now_posix":1683056241.957986} *)
 let () =
   Eio_main.run
   @@ fun env ->
