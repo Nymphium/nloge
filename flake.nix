@@ -38,7 +38,6 @@
         devPackagesQuery = {
           ocaml-lsp-server = "*";
           utop = "*";
-          dune-release = "*";
           ocamlformat = pkgs.callPackage ./nix/ocamlformat.nix { ocamlformat = ./.ocamlformat; };
         };
 
