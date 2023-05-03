@@ -1,6 +1,5 @@
 opam-version: "2.0"
-version: "0.0.0"
-synopsis: "non-blocking logger with eio"
+synopsis: "Non-blocking logger with eio"
 maintainer: ["Satoru Kawahara <s1311350@gmail.com>"]
 authors: ["Satoru Kawahara <s1311350@gmail.com>"]
 license: "MIT"
