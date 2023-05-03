@@ -1,5 +1,12 @@
 opam-version: "2.0"
 version: "0.0.0"
+synopsis: "non-blocking logger with eio"
+maintainer: ["Satoru Kawahara <s1311350@gmail.com>"]
+authors: ["Satoru Kawahara <s1311350@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/Nymphium/nloge"
+bug-reports: "https://github.com/Nymphium/nloge/issues"
+dev-repo: "git+https://github.com/Nymphium/nloge.git"
 depends: [
   "dune" {>= "3.0.0"}
   "eio"
@@ -10,3 +17,5 @@ depends: [
   "alcotest" { with-test }
   "odoc" { with-doc }
 ]
+
+build: ["dune" "build" "-j" jobs "-p" name]
