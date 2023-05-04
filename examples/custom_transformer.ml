@@ -31,8 +31,8 @@ DEBUG:
  *)
 let plain_transformer f =
   Nloge.make_emit_handler f
-  @@ fun level loc metadata msg ->
-  let json = Nloge.Trans.insert_info None loc (Some msg) metadata in
+  @@ fun _now level loc metadata msg ->
+  let json = Nloge.Trans.insert_info None None loc (Some msg) metadata in
   let len = List.length json in
   let k0 = Format.kasprintf (Nloge.write level) "%a:\n%s" Nloge.Level.pp level in
   let k, _ =
@@ -56,7 +56,12 @@ let () =
   @@ fun env ->
   Eio.Switch.run
   @@ fun sw ->
-  Nloge.run ~sw ~outputs:[ env#stdout ] ~level:`Debug ~trans:plain_transformer
+  Nloge.run
+    ~clock:env#clock
+    ~sw
+    ~outputs:[ env#stdout ]
+    ~level:`Debug
+    ~trans:plain_transformer
   @@ fun () ->
   let index i = "index", `Int i in
   for i = 1 to 200 do

@@ -1,7 +1,7 @@
 (library
  (name nloge)
  (public_name nloge)
- (libraries eio yojson)
+ (libraries eio yojson ptime.clock.os)
  (flags :standard -alert -unstable)
  (preprocess
   (pps ppx_deriving.std)))

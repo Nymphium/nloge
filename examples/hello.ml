@@ -5,7 +5,7 @@ let () =
   @@ fun env ->
   Eio.Switch.run
   @@ fun sw ->
-  Nloge.run ~sw ~outputs:[ env#stdout ] ~level:`Debug
+  Nloge.run ~clock:env#clock ~sw ~outputs:[ env#stdout ] ~level:`Debug
   @@ fun () ->
   Nloge.debug
     ~__LOC__

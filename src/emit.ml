@@ -26,7 +26,8 @@ let make_emit_handler f msgh =
     | Emit (level, loc, json, msgf) ->
       Some
         (fun k ->
-          msgf @@ Format.kasprintf (msgh level loc json);
+          let now = Time.now' () in
+          msgf @@ Format.kasprintf (msgh now level loc json);
           Effect.Deep.continue k ())
     | _ -> None
   in
