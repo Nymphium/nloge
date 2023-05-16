@@ -11,6 +11,12 @@ on:
 permissions: write-all
 env:
   OCAML_COMPILER: "5.0"
+  GIT_EMAIL: "s1311350@gmail.com"
+  GIT_NAME: "Satoru Kawahara"
+  GITHUB_ID: "Nymphium"
+  GITHUB_REPO_NAME: "nloge"
+  GITHUB_TOKEN: ${{ secrets.CD_TOKEN }}
+  OPAM_NAME: "nloge"
 
 jobs:
   release:
@@ -34,18 +40,29 @@ jobs:
           ocaml-compiler: ${{ env.OCAML_COMPILER }}
       - name: Install deps
         run: |
-          git config --global user.email "s1311350@gmail.com"
-          git config --global user.name "Satoru Kawahara"
+          git config --global user.email "${{ env.GIT_EMAIL }}"
+          git config --global user.name "${{ env.GIT_NAME }}"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
-          echo "machine github.com login Nymphium password ${{ secrets.CD_TOKEN }}" > ~/.netrc
+          echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ env.GITHUB_TOKEN }}" > ~/.netrc
           opam install dune-release -y
           mkdir -p $HOME/git
           git clone https://github.com/ocaml/opam-repository $HOME/git/opam-repository
-      # - name: Setup tmate session
-        # uses: mxschmitt/action-tmate@v3
-      - name: Submit
+          mkdir -p $HOME/.config/dune
+          cat <<EOL > $HOME/.config/dune/release.yml
+          remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
+          local: $HOME/git/opam-repository
+          EOL
+      - name: Build release contents
         run: |
           opam exec -- dune-release distrib --skip-lint --skip-build
-          echo "https://github.com/Nymphium/nloge/archive/refs/tags/${{ env.RELEASE_VERSION }}.tar.gz" > _build/asset-${{ env.RELEASE_VERSION }}.url
           opam exec -- dune-release opam pkg
-          opam exec -- dune-release opam submit -y --no-auto-open --token ${{ secrets.CD_TOKEN }}
+      - name: Upload tgz
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ env.GITHUB_TOKEN }}
+          file: _build/${{ env.OPAM_NAME }}-${{ env.RELEASE_VERSION }}.tbz
+          asset_name: ${{ env.OPAM_NAME }}-${{ env.RELEASE_VERSION }}.tbz
+          tag: ${{ github.ref }}
+      - name: Submit
+        run: |
+          opam exec -- dune-release opam submit -y --no-auto-open --token ${{ env.GITHUB_TOKEN }}
