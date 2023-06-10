@@ -16,6 +16,7 @@ env:
   GITHUB_REPO_NAME: "nloge"
   GITHUB_TOKEN: ${{ secrets.CD_TOKEN }}
   OPAM_NAME: "nloge"
+  OPAMVAR_jobs: 8
 
 jobs:
   release:
