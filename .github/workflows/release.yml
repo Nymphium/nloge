@@ -64,5 +64,5 @@ jobs:
           tag: ${{ github.ref }}
       - name: Submit
         run: |
-          opan exec -- dune-release publish doc -y --token ${{ env.GITHUB_TOKEN }}
+          opam exec -- dune-release publish doc -y --token ${{ env.GITHUB_TOKEN }}
           opam exec -- dune-release opam submit -y --no-auto-open --token ${{ env.GITHUB_TOKEN }}
