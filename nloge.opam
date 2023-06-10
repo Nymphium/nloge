@@ -4,6 +4,7 @@ maintainer: ["Satoru Kawahara <s1311350@gmail.com>"]
 authors: ["Satoru Kawahara <s1311350@gmail.com>"]
 license: "MIT"
 homepage: "https://github.com/Nymphium/nloge"
+doc: "https://nymphium.github.io/nloge"
 bug-reports: "https://github.com/Nymphium/nloge/issues"
 dev-repo: "git+https://github.com/Nymphium/nloge.git"
 depends: [
