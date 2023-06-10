@@ -16,6 +16,7 @@ depends: [
   "ppx_expect" { with-test }
   "alcotest" { with-test }
   "odoc" { with-doc }
+  "odig" { with-doc }
 ]
 
 build: ["dune" "build" "-j" jobs "-p" name]

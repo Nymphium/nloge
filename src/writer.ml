@@ -1,3 +1,7 @@
+(** {1:writer Writing logs}
+    Nloge writes logs, given by {!Emit} effect, to {!type-"Eio.Flow.sink"}
+*)
+
 open struct
   module Time_ = Time
 end
@@ -5,9 +9,7 @@ end
 open Eio
 open Effect.Deep
 
-type _ Effect.t +=
-  | Write : string * Level.t -> unit Effect.t
-  | GetTime : #Time.clock Effect.t
+type _ Effect.t += Write : string * Level.t -> unit Effect.t
 
 let write level msg = Effect.perform @@ Write (msg, level)
 
@@ -18,25 +20,30 @@ module Trans = struct
 
   let insert_info now log_level loc message metadata =
     metadata
+    |> List.cons ("message", `String message)
+    |> List.cons ("log_level", `String (Level.show log_level))
     |> optional "label" loc (fun s -> `String s)
-    |> optional "message" message (fun s -> `String s)
-    |> optional "log_level" (Option.map Level.show log_level) (fun s -> `String s)
     |> optional
          "timestamp"
          Option.(
-           bind now Ptime.of_float_s
-           |> map (Ptime.to_rfc3339 ?tz_offset_s:(Ptime_clock.current_tz_offset_s ())))
+           now
+           |> Ptime.of_float_s
+           |> map @@ Ptime.to_rfc3339 ?tz_offset_s:(Ptime_clock.current_tz_offset_s ()))
          (fun s -> `String s)
   ;;
 
   let json f =
     Emit.make_emit_handler f (fun now level loc json msg ->
-      write level
-      @@ Yojson.Safe.to_string
-      @@ `Assoc (insert_info (Some now) (Some level) loc (Some msg) json))
+      write level @@ Yojson.Safe.to_string @@ `Assoc (insert_info now level loc msg json))
   ;;
 end
 
+(** [run] is the handler to write logs to given outputs.
+  @param clock {!type-"Eio.Time.clock"} clock objet
+  @param sw {!type-"Eio.Switch.t"} switch object to write output asynchronously
+  @param outputs {!type-"Eio.Flow.sink list"} the targets to write logs
+  @param level {!type-"Level.t option"}
+ *)
 let run ~clock ~sw ~outputs ~(level : Level.t) ?(trans = Trans.json) f =
   let effc : type a. a Effect.t -> ((a, 'r) continuation -> 'r) option = function
     | Write (str, level') ->

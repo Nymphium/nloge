@@ -1,4 +1,4 @@
-(** syslog level *)
+(** [t] represents syslog-style levels *)
 type t =
   [ `Emergency
   | `Alert
@@ -11,11 +11,15 @@ type t =
   ]
 [@@deriving eq, ord]
 
-type _ Effect.t += Get : t Effect.t (** [Get] refers current logging level. *)
+(** [Get] refers to the current logging level. *)
+type _ Effect.t += Get : t Effect.t
 
 let get_level () = Effect.perform Get
 
-let parse = function
+(** [parse]s upper, lower, and initial capital letter cases.
+
+    {[parse "DEBUG" = parse "debug" = parse "Debug" = Some `Debug]} *)
+let parse : string -> t option = function
   | "Emergency" | "EMERGENCY" | "emergency" -> Some `Emergency
   | "Alert" | "ALERT" | "alert" -> Some `Alert
   | "Critical" | "CRITICAL" | "critical" -> Some `Critical
@@ -27,6 +31,9 @@ let parse = function
   | _ -> None
 ;;
 
+(** [pp] prints level with upper capital
+
+    {[pp Format.std_formatter `Debug (* -> DEBUG *)]} *)
 let pp fmt (t : t) =
   Format.fprintf fmt
   @@
