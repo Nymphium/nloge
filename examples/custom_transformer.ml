@@ -31,8 +31,8 @@ DEBUG:
  *)
 let plain_transformer f =
   Nloge.make_emit_handler f
-  @@ fun _now level loc metadata msg ->
-  let json = Nloge.Trans.insert_info None None loc (Some msg) metadata in
+  @@ fun now level loc metadata msg ->
+  let json = Nloge.Trans.insert_info now level loc msg metadata in
   let len = List.length json in
   let k0 = Format.kasprintf (Nloge.write level) "%a:\n%s" Nloge.Level.pp level in
   let k, _ =
