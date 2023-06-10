@@ -44,6 +44,7 @@ jobs:
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ env.GITHUB_TOKEN }}" > ~/.netrc
           opam install dune-release -y
+          opam install . --deps-only --with-test --with-doc -y
           mkdir -p $HOME/git
           git clone https://github.com/ocaml/opam-repository $HOME/git/opam-repository
           mkdir -p $HOME/.config/dune
