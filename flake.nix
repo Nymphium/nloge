@@ -114,7 +114,7 @@
           };
 
           default = pkgs.mkShellNoCC {
-            inputsFrom = [ ci];
+            inputsFrom = [ ci ];
             packages = devPackages ++ [
               pkgs.nil
             ];
