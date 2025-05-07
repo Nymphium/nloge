@@ -30,7 +30,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         on = opam-nix.lib.${system};
         src = ./.;
-        localNames =
+        localPackages =
           with builtins;
           filter (f: !isNull f) (
             map (
@@ -48,7 +48,7 @@
             map (p: {
               name = p;
               value = "*";
-            }) localNames
+            }) localPackages
           );
 
         devPackagesQuery = {
@@ -101,21 +101,30 @@
           scp.overrideScope overlay;
 
         devPackages = builtins.attrValues (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope);
-
         formatter = pkgs.nixfmt-rfc-style;
+
+        devShells = rec {
+          ci = pkgs.mkShellNoCC {
+            inputsFrom = builtins.map (p: scope.${p}) localPackages;
+            packages = [
+              formatter
+              scope.ocamlformat
+              pkgs.actionlint
+            ];
+          };
+
+          default = pkgs.mkShellNoCC {
+            inputsFrom = [ ci];
+            packages = devPackages ++ [
+              pkgs.nil
+            ];
+          };
+        };
       in
       {
         legacyPackages = scope;
 
-        devShells.default = pkgs.mkShellNoCC {
-          inputsFrom = builtins.map (p: scope.${p}) localNames;
-          packages = devPackages ++ [
-            pkgs.nil
-            pkgs.actionlint
-            formatter
-          ];
-        };
-
+        inherit devShells;
         inherit formatter;
       }
     );

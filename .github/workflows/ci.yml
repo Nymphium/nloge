@@ -28,6 +28,8 @@ jobs:
           authToken: '${{ secrets.CACHIX_TOKEN }}'
 
       - uses: rrbutani/use-nix-shell-action@v1
+        with:
+          devShell: '.#ci'
 
       - name: Check format
         run: |
