@@ -1,3 +1,5 @@
-(lang dune 3.7)
+(lang dune 3.18)
+
+(using mdx 0.4)
 
 (name nloge)

@@ -34,3 +34,6 @@ $ dune exec --display=quiet examples/hello.exe
 
 # custom writere
 See [custom writer](/examples/custom_transformer.ml)
+
+# LICENSE
+MIT

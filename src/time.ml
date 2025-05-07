@@ -1,13 +1,10 @@
-type _ Effect.t += Get : Eio.Time.clock Effect.t
+type _ Effect.t += Now : float Effect.t
 
-let get () = Effect.perform Get
-let now' () = Eio.Time.now @@ get ()
+let now' () = Effect.perform Now
 
-let run (clock : #Eio.Time.clock) f =
-  let open Effect.Deep in
-  let effc : type a. a Effect.t -> ((a, 'r) continuation -> 'r) option = function
-    | Get -> Some (fun k -> continue k clock)
-    | _ -> None
-  in
-  try_with f () { effc }
+let run (clock : 'a Eio.Time.clock) f =
+  try f () with
+  | effect Now, k ->
+    let c = Eio.Time.now clock in
+    Effect.Deep.continue k c
 ;;

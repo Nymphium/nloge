@@ -5,3 +5,5 @@
  (flags :standard -alert -unstable)
  (preprocess
   (pps ppx_deriving.std)))
+
+(mdx)
