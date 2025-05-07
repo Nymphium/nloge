@@ -111,6 +111,7 @@
           inputsFrom = builtins.map (p: scope.${p}) localNames;
           packages = devPackages ++ [
             pkgs.nil
+            pkgs.actionlint
             formatter
           ];
         };
