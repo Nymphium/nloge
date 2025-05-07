@@ -22,7 +22,7 @@ jobs:
           extra-conf: |
             cores = 0
 
-      - uses: cachix/cachix-action@v12
+      - uses: cachix/cachix-action@v16
         with:
           name: nloge-cache
           authToken: '${{ secrets.CACHIX_TOKEN }}'
