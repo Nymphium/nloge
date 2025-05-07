@@ -6,4 +6,4 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "nymphium"
+      - "@Nymphium"

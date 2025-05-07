@@ -27,10 +27,7 @@ jobs:
           name: nloge-cache
           authToken: '${{ secrets.CACHIX_TOKEN }}'
 
-      - name: "Switch nix-shell to .#ci"
-        uses: rrbutani/use-nix-shell-action@v1
-        with:
-          devShell: .#ci
+      - uses: rrbutani/use-nix-shell-action@v1
 
       - name: Check format
         run: |
